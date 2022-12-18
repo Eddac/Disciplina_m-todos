@@ -112,6 +112,7 @@ Sala_20 %>% slice(1,4,5)
 # Aula 3 -------------------------------------------------------------------
 
 # Select
+#
 HSE_AP_2 <- HSE_AP
 
 names(HSE_AP_2)
@@ -127,13 +128,11 @@ HSE_AP_3 <- HSE_AP_2 %>% select(1:34,36,35, everything())
 view(HSE_AP_3)
 
 # filter
-
 HSE_AP_4 <- HSE_AP_2 %>% filter(Gênero == "Masculino")
 
 HSE_AP_4 <- HSE_AP_2 %>% select(1:10) %>% filter(Gênero == "Feminino")
 
 # slice
-
 HSE_AP_5 <- HSE_AP_2 %>% slice(22:36)
 
 HSE_AP_5 <- HSE_AP_2 %>% select(1:10) %>% filter(Gênero == "Feminino") %>% slice(1)
@@ -152,21 +151,25 @@ view(HSE_AP_4)
 names(HSE_AP)
 
 ## select
-
 HSE_AP %>% select(1,2)
 HSE_AP %>% select(1:3)
 HSE_AP %>% select(Idade)
 HSE_AP_2 <- HSE_AP %>% select(1,2,4,6, 45:60)
+
 # reordenando o banco a partir do select
 HSE_AP_2 <- HSE_AP %>% select(4:6, everything())
+
 # retirando uma coluna
 HSE_AP_2 %>% select(-1)
+
+# Quando desejamos retirar mais de uma coluna em sequencia, utilizaremos o sinal de exclamação
+HSE_AP_3 <- HSE_AP_2 %>% select(!3:7, -121)
+
 # selecionar variáveis que começam com determinadas letras
 HSE_AP %>% select(starts_with("D")) %>% view()
 
 ## filter
 # essa função permite a seleção de linhas
-
 HSE_AP %>% filter(Gênero == "Masculino")
 
 HSE_AP %>% select(8) %>% filter(1)
@@ -175,22 +178,18 @@ unique(HSE_AP$`Estado de moradia`)
 
 ## Slice
 # selecionar linhas
-
 HSE_AP %>% slice(1:5)
 
 ## Arrange
 # Ordenar os dados por um critério
-
 HSE_AP %>% arrange(Idade)
 HSE_AP %>% arrange(desc(Idade))
 
 ## Rename
-
 HSE_AP %>% rename(M1 = "Sucesso na universidade, para mim, é fazer as coisas melhor que a maioria da classe.")
 
 ## Mutate
 # criar variáveis dentro de um dataframe
-
 HSE_AP %>% mutate(MF = "Sucesso na universidade, para mim, é fazer as coisas melhor que a maioria da classe." + "É muito importante, para mim, fazer as tarefas melhor que os colegas.")
 HSE_AP %>% mutate(Fator1 = 58+59+60+61+64/5)
 HSE_AP_2 <- HSE_AP %>% mutate(Fator1 = 58+59+60+61+64)
@@ -201,7 +200,6 @@ df_geral$MF3 <- df_geral %>% select(71:74) %>% rowMeans() # Meta evitação
 
 ## Group_by
 # Agrupa informações
-
 HSE_AP %>% group_by(Gênero)
 
 
@@ -210,3 +208,18 @@ HSE_AP %>% group_by(Gênero)
 df_ap <- read_xlsx("HSE_AP.xlsx")
 df_ss <- read_xlsx("HSE_DOC_SERSO_2.xlsx")
 
+names(df_ap)
+names(df_ss)
+
+df_ap <- df_ap %>% rename("1ª Amizade" = "1ª amizade", 
+                          "2ª Amizade" = "2ª amizade",
+                          "3ª Amizade" = "3ª amizade",
+                          "4ª Amizade" = "4ª amizade",
+                          "5ª Amizade" = "5ª amizade",
+                          "1º Distanciamento" = "1ª distanciamento",
+                          "2º Distanciamento" = "2ª distanciamento",
+                          "3º Distanciamento" = "3ª distanciamento",
+                          "4º Distanciamento" = "4ª distanciamento",
+                          "5º Distanciamento" = "5ª distanciamento")
+
+df_geral <- rbind(df_ap, df_ss)
