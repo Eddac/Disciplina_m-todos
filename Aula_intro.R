@@ -4,6 +4,7 @@
 ## Carregando pacotes
 library(tidyverse)
 library(ds4psy)
+library(readxl)
 
 # Conceitos básicos
 
@@ -203,4 +204,9 @@ df_geral$MF3 <- df_geral %>% select(71:74) %>% rowMeans() # Meta evitação
 
 HSE_AP %>% group_by(Gênero)
 
+
+# Aula 4 ------------------------------------------------------------------
+
+df_ap <- read_xlsx("HSE_AP.xlsx")
+df_ss <- read_xlsx("HSE_DOC_SERSO_2.xlsx")
 

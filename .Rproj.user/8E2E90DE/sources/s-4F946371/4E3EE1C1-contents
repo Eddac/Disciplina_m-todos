@@ -1,0 +1,17 @@
+---
+title: "teste"
+author: "Emanuel Cordeiro"
+date: "12/14/2022"
+output: html_document
+---
+
+# dakdkaksdak eu vou comentar esse **texto**
+## Segundo subt
+### Terceiro sub
+
+```{r, warning=FALSE}
+x <- 6
+x
+```
+
+
