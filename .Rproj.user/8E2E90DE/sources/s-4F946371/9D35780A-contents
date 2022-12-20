@@ -13,3 +13,8 @@
 #3 Filtre os participantes masculinos e coloque em outro banco de dados
 
 #4 Filtre os participantes femininos e coloque em outro banco de dados
+
+
+# Exercício 2 -------------------------------------------------------------
+
+

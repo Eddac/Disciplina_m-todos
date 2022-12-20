@@ -110,6 +110,7 @@ Sala_20 %>% slice(1,4,5)
 
 
 # Aula 3 -------------------------------------------------------------------
+HSE_AP <- read_xlsx("HSE_AP.xlsx")
 
 # Select
 #
@@ -186,14 +187,20 @@ HSE_AP %>% arrange(Idade)
 HSE_AP %>% arrange(desc(Idade))
 
 ## Rename
-HSE_AP %>% rename(M1 = "Sucesso na universidade, para mim, é fazer as coisas melhor que a maioria da classe.")
+HSE_AP <- HSE_AP %>% rename(M1 = "Sucesso na universidade, para mim, é fazer as coisas melhor que a maioria da classe.")
+HSE_AP <- HSE_AP %>% rename(M2 = "É muito importante, para mim, fazer as tarefas melhor que os colegas.")
+
+names(HSE_AP)
 
 ## Mutate
 # criar variáveis dentro de um dataframe
-HSE_AP %>% mutate(MF = "Sucesso na universidade, para mim, é fazer as coisas melhor que a maioria da classe." + "É muito importante, para mim, fazer as tarefas melhor que os colegas.")
+HSE_AP <- HSE_AP %>% mutate(MF = M1+M2)
+
+HSE_AP %>% mutate(MF = M1 + "É muito importante, para mim, fazer as tarefas melhor que os colegas.")
 HSE_AP %>% mutate(Fator1 = 58+59+60+61+64/5)
 HSE_AP_2 <- HSE_AP %>% mutate(Fator1 = 58+59+60+61+64)
 
+# Calculando a média dos itens para chegar ao fator
 df_geral$MF1 <- df_geral %>% select(58:61, 64) %>% rowMeans() # Meta performance 
 df_geral$MF2 <- df_geral %>% select(62,63,65:70) %>% rowMeans() # Meta aprender
 df_geral$MF3 <- df_geral %>% select(71:74) %>% rowMeans() # Meta evitação
@@ -223,3 +230,12 @@ df_ap <- df_ap %>% rename("1ª Amizade" = "1ª amizade",
                           "5º Distanciamento" = "5ª distanciamento")
 
 df_geral <- rbind(df_ap, df_ss)
+
+# Outras combinações de tabela
+# Inner join
+df_1 <- data.frame(Nome = c("Carlos", "Eduarda", "Maria"), Idade = c(20,21,20), 
+                   Felicidade = c(9,8,7), Inteligencia = c(9,9,7))
+
+df_2 <- data.frame(Nome = c("Carlos", "Eduarda", "Pedro", "Maria", "João"),
+                   Bairro = c("A", "A", "B", "C", "A"), H_social = c(9,9,6,5,7))
+
