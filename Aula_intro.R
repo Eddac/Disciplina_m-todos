@@ -6,6 +6,8 @@ library(tidyverse)
 library(ds4psy)
 library(readxl)
 
+# Aula 1 ------------------------------------------------------------------
+
 # Conceitos básicos
 
 # Multiplicação
@@ -55,6 +57,9 @@ Nomes <- c("Oscar", "Bia", "Tulio", "Mariana", "Inacio", "Vitoria", "Gilberto", 
 Nomes
 # Guardando uma lista de idades
 Idade <- c(28, 22, 26, 22, 23, 21, 22, 22, 31)
+
+
+# Aula 2 ------------------------------------------------------------------
 
 # Unindo os vetores em um dataframe
 Sala_20 <- data.frame(Nomes, Idade)
@@ -110,35 +115,13 @@ Sala_20 %>% slice(1,4,5)
 
 
 # Aula 3 -------------------------------------------------------------------
+# A partir de agora, utilizaremos um banco de dados pertencente a pesquisa de doutorado de Emanuel
+# O banco de dados corresponde a uma turma específica da amostra da tese
+# Para carregar essas informações, será necessário utilizar uma função específica read_slsx
+# É importante lembrar que o arquivo do banco deve estar no mesmo diretório do projeto
+
+# Carregando o banco de dados
 HSE_AP <- read_xlsx("HSE_AP.xlsx")
-
-# Select
-#
-HSE_AP_2 <- HSE_AP
-
-names(HSE_AP_2)
-
-HSE_AP_3 <- HSE_AP_2 %>% select(1:5, 121,122)
-
-HSE_AP_3 <- HSE_AP_2 %>% select(Idade, "Atividades universitárias")
-
-HSE_AP_3 <- HSE_AP_2 %>% select(!3:7, -121)
-
-HSE_AP_3 <- HSE_AP_2 %>% select(1:34,36,35, everything())
-
-view(HSE_AP_3)
-
-# filter
-HSE_AP_4 <- HSE_AP_2 %>% filter(Gênero == "Masculino")
-
-HSE_AP_4 <- HSE_AP_2 %>% select(1:10) %>% filter(Gênero == "Feminino")
-
-# slice
-HSE_AP_5 <- HSE_AP_2 %>% slice(22:36)
-
-HSE_AP_5 <- HSE_AP_2 %>% select(1:10) %>% filter(Gênero == "Feminino") %>% slice(1)
-
-HSE_AP_2 %>% slice(-33)
 
 view(HSE_AP_4)
 # Quais as principais funções no pacote dplyr
@@ -156,6 +139,8 @@ HSE_AP %>% select(1,2)
 HSE_AP %>% select(1:3)
 HSE_AP %>% select(Idade)
 HSE_AP_2 <- HSE_AP %>% select(1,2,4,6, 45:60)
+HSE_AP_2 <- HSE_AP %>% select(!3:7, -121)
+HSE_AP_2 <- HSE_AP %>% select(1:34,36,35, everything())
 
 # reordenando o banco a partir do select
 HSE_AP_2 <- HSE_AP %>% select(4:6, everything())
@@ -180,25 +165,23 @@ unique(HSE_AP$`Estado de moradia`)
 ## Slice
 # selecionar linhas
 HSE_AP %>% slice(1:5)
+HSE_AP %>% slice(-33)
 
 ## Arrange
 # Ordenar os dados por um critério
 HSE_AP %>% arrange(Idade)
 HSE_AP %>% arrange(desc(Idade))
 
-## Rename
-HSE_AP <- HSE_AP %>% rename(M1 = "Sucesso na universidade, para mim, é fazer as coisas melhor que a maioria da classe.")
-HSE_AP <- HSE_AP %>% rename(M2 = "É muito importante, para mim, fazer as tarefas melhor que os colegas.")
-
-names(HSE_AP)
-
-## Mutate
+## Mutate e #rename
+# Rename
+HSE_AP <- HSE_AP %>% rename(H1 = "Tenho jeito para lidar com pessoas problemáticas.",
+                            H2 = "Detecto a influência, positiva ou negativa, que outras pessoas exercem sobre as minhas emoções.")
 # criar variáveis dentro de um dataframe
-HSE_AP <- HSE_AP %>% mutate(MF = M1+M2)
 
-HSE_AP %>% mutate(MF = M1 + "É muito importante, para mim, fazer as tarefas melhor que os colegas.")
-HSE_AP %>% mutate(Fator1 = 58+59+60+61+64/5)
-HSE_AP_2 <- HSE_AP %>% mutate(Fator1 = 58+59+60+61+64)
+# Mutate
+HSE_AP <- HSE_AP %>% mutate(HG = H1 + H2)
+HSE_AP <- HSE_AP %>% mutate(HGDIVI = H1/H2)
+HSE_AP <- HSE_AP %>% select(1:13,123,124, everything())
 
 # Calculando a média dos itens para chegar ao fator
 df_geral$MF1 <- df_geral %>% select(58:61, 64) %>% rowMeans() # Meta performance 
@@ -209,6 +192,10 @@ df_geral$MF3 <- df_geral %>% select(71:74) %>% rowMeans() # Meta evitação
 # Agrupa informações
 HSE_AP %>% group_by(Gênero)
 
+# O uso do group_by é constantemente aplicado para análises estatísticas
+HSE_AP %>% group_by(Gênero) %>% summarise("Coluna H1" = mean(H1), 
+                                          "Desvio Padrão" = sd(H1),
+                                          Quantidade = n())
 
 # Aula 4 ------------------------------------------------------------------
 
