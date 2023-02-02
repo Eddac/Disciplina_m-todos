@@ -84,3 +84,59 @@ ifelse(df$v1 == 1,5,
 recode(df[ ,c("v1","v2","v3","v4","v5")]) <- c(1~5,2~4,3~3,4~2,5~1)
 recode(df[ ,c("v1","v5")]) <- c(1~5,2~4,3~3,4~2,5~1)
 ```
+
+
+## rowSums() e rowMeans()
+
+```{r}
+## calcular pontuações das pessoas em um conjunto de itens.
+## vamos supor que v1, v2 e v5 formam a pontuação em um fator
+## e que v3 e v4 formam a pontuação em outro fator
+## se quisermos calcular a somatória das pontuações nesses dois fatores, podemos usar:
+df %>% select(v1,v2,v5) %>% rowSums()
+## para salvar esses resultados em uma nova coluna no dataframe df, basta usar df$nome
+df$sum1 <- df %>% select(v1,v2,v5) %>% rowSums()
+df$sum2 <- df %>% select(v3,v4) %>% rowSums()
+## podemos calcular essas pontuações pela média nos itens ao invés da somatória
+df$mean1 <- df %>% select(v1,v2,v5) %>% rowMeans() %>% round(digits = 1)
+df$mean2 <- df %>% select(v3,v4) %>% rowMeans()
+```
+
+## count()
+
+```{r}
+# contar casos dentro de uma variável. 
+# Função útil, por exemplo, para descrever a amostra.
+# dependendo de como se escreve essa função ela dá um tipo de informação.
+count(df) # se colocar apenas o nome do dataframe, retorna o número de casos total
+count(df,sexo) # especificando uma varíável, retorna o número de casos dentro da variável
+count(df,sexo,escolaridade) # comando igual a df %>% group_by(sexo) %>% count(escolaridade)
+# para acrescentar uma coluna com as respectivas porcentagens
+df %>% count(sexo) %>% mutate(porc = n/sum(n)*100)
+df %>% count(sexo,escolaridade) %>% mutate(porc = n/sum(n)*100)
+```
+
+## Estatísticas de tendência central e de disperção
+
+A função `rowMeans()` calcula a média de algumas variáveis em uma **linha**.\
+Se quisermos calcular a média e o desvio padrão dos valores de uma **coluna** (variável), temos que usar as funções `mean()` e `sd()`.\
+Outras medidas de tendência central são a mediana e a moda .
+
+```{r}
+# média das pontuações as variáveis "idade", "renda_total", "escore".
+mean(df$idade)
+# ao rodar essa análise, notei que a variável "idade" está como character
+# ou seja, os valores numéricos estão sendo entendidos como texto
+# então, precisamos fazer uma transformação dessa variável em numérica.
+df$idade <- as.numeric(as.character(df$idade))
+# agora, rodar novamente a média
+mean(df$idade, na.rm = TRUE) # na coluna idade, há um valor de idade não informado (NA)
+                             # o comando precisa informar que os NAs devem ser removidos
+                             # por isso o comando "na.rm = TRUE"
+# procedimento semelhante para o cálculo do desvio padrão.
+sd(df$idade, na.rm = TRUE)
+# mediana
+median(df$idade,na.rm = TRUE)
+# moda
+count(df,escore)
+```

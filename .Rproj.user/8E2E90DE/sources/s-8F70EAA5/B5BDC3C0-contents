@@ -1,0 +1,119 @@
+---
+title: "Renata_análises"
+author: "Emanuel Cordeiro"
+date: "5/31/2022"
+output:
+  html_document: default
+  pdf_document: default 
+  word_document: default
+---
+
+# Teste x² de Independência
+Abaixo, observa-se a construção do banco de dados e suas respectivas análises do teste qui-quadrado. Para esse teste, as colunas indicaram o os contextos e as linhas os tipos de erros. Em seguida, o teste analisa a diferença de distribuição dessas categorias.  
+  
+```{r, warning=FALSE}
+options(scipen = 999)
+Combinacao <- data.frame(Implicito_c=c(3,15,4,7,4), Explicito_c=c(5,0,4,7,16),
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+
+x1 <- chisq.test(Combinacao)
+x1
+
+
+Arranjo <- data.frame(Implicito_a=c(1,9,1,12,9), Explicito_a=c(1,0,0,7,30),
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+
+x2 <- chisq.test(Arranjo)
+x2
+
+Permutacao <- data.frame(Implicito_p=c(2,10,5,8,8), Explicito_p=c(2,1,1,2,30), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+
+x3 <- chisq.test(Permutacao)
+x3
+```
+
+```{r}
+x1$observed
+```
+
+```{r}
+x1$expected
+```
+
+```{r}
+x1
+```
+
+
+```{r}
+novoalfa <- 0.05/(nrow(Arranjo)*ncol(Arranjo))
+qnorm(novoalfa/2) # ponto de corte -2.80 2.80
+```
+
+```{r}
+round(2*(1-pnorm(abs(x1$stdres))),6)
+round(2*(1-pnorm(abs(x2$stdres))),6)
+round(2*(1-pnorm(abs(x3$stdres))),6)
+```
+
+```{r}
+# Resíduo padronizado ajustado >1,96 ou < -1,96
+
+#x1$expected
+#x1$residuals
+x1$stdres # recomendado
+
+#x2$expected
+#x2$residuals
+x2$stdres # recomendado
+
+#x3$expected
+#x3$residuals
+x3$stdres # recomendado
+```
+
+```{r}
+Combinacao_2 <- data.frame(Implicito_c=c(22,11), Explicito_c=c(9,23),
+                   row.names = c('G1', 'G2'))
+
+x4<- chisq.test(Combinacao_2)
+x4
+
+Arranjo_2 <- data.frame(Implicito_a=c(11,21), Explicito_a=c(1,37),
+                   row.names = c('G1', 'G2'))
+
+x5<- chisq.test(Arranjo_2)
+x5
+
+Permutacao_2 <- data.frame(Implicito_p=c(17,16), Explicito_p=c(4,32),
+                   row.names = c('G1', 'G2'))
+
+x6<- chisq.test(Permutacao_2)
+x6
+
+Geral <- cbind(Combinacao_2,Arranjo_2,Permutacao_2)
+
+x7 <- chisq.test(Geral)
+x7
+```
+
+```{r}
+novoalfa2 <- 0.05/(nrow(Geral)*ncol(Geral))
+qnorm(novoalfa2/2) # ponto de corte -2.86 2.86
+```
+
+
+```{r}
+x7$expected
+x7$residuals
+x7$stdres # recomendado
+round(2*(1-pnorm(abs(x7$stdres))),6)
+```
+
+```{r}
+x7$statistic
+x7$expected
+```
+
+

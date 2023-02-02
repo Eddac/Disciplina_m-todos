@@ -5,6 +5,9 @@
 library(tidyverse)
 library(ds4psy)
 library(readxl)
+library(pander)
+library(descr)
+library(janitor)
 
 # Aula 1 ------------------------------------------------------------------
 
@@ -225,4 +228,109 @@ df_1 <- data.frame(Nome = c("Carlos", "Eduarda", "Maria"), Idade = c(20,21,20),
 
 df_2 <- data.frame(Nome = c("Carlos", "Eduarda", "Pedro", "Maria", "João"),
                    Bairro = c("A", "A", "B", "C", "A"), H_social = c(9,9,6,5,7))
+
+
+# Aula 31/01/2023 ---------------------------------------------------------
+
+# Introdução as análises estatísticas
+# Análise de qui-quadrado
+# O teste apresenta três versões
+# Entendendo o conceito do teste de hipóteses
+# Hipótese Nula/Hipótese alternativa
+# Conceito do valor de p
+# Nesse teste, analisamos a associação entre variáveis a partir de uma escolha ou tipo de resposta
+# variáveis dicotômicas ou nominais
+
+# Retomando conceitos de estatística descritiva
+df_exe %>% select(1) %>% colSums()
+df_exe %>% select(1) %>% colMeans()
+df_exe %>% select(1,2) %>% colMeans()
+
+count(df_exe, Sexo)
+
+df_exe %>% count(Sexo) %>% mutate(porc = n/sum(n)*100)
+
+median(df_exe$Felicidade)
+sd(df_exe$Felicidade)
+
+
+# O foco dessa análise está na frequência de resposta sobre categorias, e diferenças nos padrões de grupos
+# Há algumas possibilidades de executar essa análise
+
+# 1º Possibilidade
+# Qui-quadrado de independência
+# Tabela com as proporção de respostas e respostas esperadas
+descr::CrossTable(Base_ADHD.2020$sex_male, Base_ADHD.2020$adhd_parent, 
+                  expected = T, prop.c = F, prop.chisq = F, prop.t = F,
+                  dnn = c("Sexo", "TDAH"))
+
+# resultado do teste qui-quadrado
+descr::CrossTable(Base_ADHD.2020$sex_male, Base_ADHD.2020$adhd_parent, 
+                  chisq = T)$CST
+
+# Instalar o pacote ggplot
+# Esse gráfico permite ver a proporção de resposta por sexo
+ggplot(Base_ADHD.2020, aes(x = sex_male, fill = adhd_parent)) +
+  geom_bar(position = "fill") +
+  coord_flip() +
+  labs(x = "Sexo", y = "Proporção", fill = "TDAH")
+
+# Hipótese nula foi rejeitada
+# tabela com resultados olhando de forma vertical
+Base_ADHD.2020 %>% tabyl(sex_male, adhd_parent) %>% 
+  adorn_totals(c("row", "col")) %>% 
+  adorn_percentages("col") %>% 
+  adorn_pct_formatting() %>% 
+  adorn_ns() %>% 
+  slice(2,1,3) %>% 
+  select(sex_male, yes, no, Total) %>% 
+  pander()
+
+# Criando um novo dataframe para testar outra forma de fazer o qui-quadrado
+Habilidade <- data.frame(Corrida=c(3,5,5,2,6), Escalada=c(7,1,8,4,4),
+                         row.names = c('Tiago', 'Pedro', 'Maria', 'Karla','Brenda'))
+
+# salvando a análise do qui-quadrado em um dataframe com nome de x1
+x1 <- chisq.test(Habilidade)
+# resultado do qui-quadrado
+x1
+# respostas observadas por categoria
+x1$observed
+# respostas esperadas por categoria
+x1$expected
+# diferença entre respostas esperadas e obtidas gera os resíduos
+x1$residuals
+# desvio padrão dos resíduos
+x1$stdres
+
+# Qui quadrado de aderencia
+festa <- data.frame(doces = c(90,80,50,95,40), 
+                                 row.names = c("Pedro","Maria", 
+                                               "Samuel", "Mari", 
+                                               "Joao"))
+
+options(scipen = 999)
+x_festa <- chisq.test(festa, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+x_festa
+
+x_festa$observed
+x_festa$expected
+x_festa$residuals
+x_festa$stdres
+
+novoalfa <- 0.05/5
+# Valor do novo alfa 0.01
+qnorm(novoalfa/2)
+# Ponto de corte dos resíduos = 2.57
+
+# Carregando banco de dados DADOS1_EMAN
+df_pf <- read_xlsx("DADOS1_EMAN.xlsx")
+# transformando o percentil
+df_pf$Percentil <- df_pf$Percentil*100
+
+# Preparando análises para o test t
+
+df_pf_ttest <- t.test(Total ~ Gênero, var.equal = T, data = df_pf)
+
+df_pf_ttest %>% pander(., split.table = Inf)
 

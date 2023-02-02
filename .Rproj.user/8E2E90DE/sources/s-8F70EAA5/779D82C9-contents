@@ -1,0 +1,213 @@
+---
+title: "Relatório Gabriela"
+author: "Emanuel Cordeiro"
+date: "06/01/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+# Análise para o teste x² de aderência
+
+Os dados abaixo se referem a construção do banco de dados **Escrita** e **Matemática**. O banco de dados foi construído a partir das 4 profissões analisadas no projeto e a frequência nas 5 categorias possíveis.
+```{r}
+### Carregar pacotes
+library(tidyverse)
+```
+
+
+```{r}
+gabi_a_escrita <- data.frame(arquitetos=c(0,1,14,1,4), 
+                      row.names = c("Categoria_1","Categoria_2", 
+                                    "Categoria_3", "Categoria_4", 
+                                    "Categoria_5"))
+
+gabi_a_matematica <- data.frame(arquitetos=c(13,11,6,0,4), 
+                      row.names = c("Categoria_1","Categoria_2", 
+                                    "Categoria_3", "Categoria_4", 
+                                    "Categoria_5"))
+
+gabi_pm_escrita <- data.frame(pro_mat=c(1,4,14,3,5), 
+                      row.names = c("Categoria_1","Categoria_2", 
+                                    "Categoria_3", "Categoria_4", 
+                                    "Categoria_5"))
+
+gabi_pm_matematica <- data.frame(pro_mat=c(9,4,6,4,3), 
+                      row.names = c("Categoria_1","Categoria_2", 
+                                    "Categoria_3", "Categoria_4", 
+                                    "Categoria_5"))
+
+gabi_ad_escrita <- data.frame(advogados=c(3,3,13,1,5), 
+                      row.names = c("Categoria_1","Categoria_2", 
+                                    "Categoria_3", "Categoria_4", 
+                                    "Categoria_5"))
+
+gabi_ad_matematica <- data.frame(advogados=c(11,4,9,2,2), 
+                      row.names = c("Categoria_1","Categoria_2", 
+                                    "Categoria_3", "Categoria_4", 
+                                    "Categoria_5"))
+
+gabi_pp_escrita <- data.frame(pro_port=c(1,2,10,0,10), 
+                      row.names = c("Categoria_1","Categoria_2", 
+                                    "Categoria_3", "Categoria_4", 
+                                    "Categoria_5"))
+
+gabi_pp_matematica <- data.frame(pro_port=c(12,2,3,2,3), 
+                      row.names = c("Categoria_1","Categoria_2", 
+                                    "Categoria_3", "Categoria_4", 
+                                    "Categoria_5"))
+```
+
+Aplicação do **teste x²** assumindo uma distribuição igual para todos os grupos.
+
+```{r, warning=FALSE}
+options(scipen = 999)
+X_gabi_a_escrita <- chisq.test(gabi_a_escrita, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+X_gabi_a_matematica <- chisq.test(gabi_a_matematica, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+X_gabi_pm_escrita <- chisq.test(gabi_pm_escrita, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+X_gabi_pm_matematica <- chisq.test(gabi_pm_matematica, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+X_gabi_ad_escrita <- chisq.test(gabi_ad_escrita, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+X_gabi_ad_matematica <- chisq.test(gabi_ad_matematica, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+X_gabi_pp_escrita <- chisq.test(gabi_pp_escrita, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+X_gabi_pp_matematica <- chisq.test(gabi_pp_matematica, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+
+X_gabi_a_escrita 
+X_gabi_a_matematica 
+X_gabi_pm_escrita 
+X_gabi_pm_matematica
+X_gabi_ad_escrita 
+X_gabi_ad_matematica
+X_gabi_pp_escrita 
+X_gabi_pp_matematica
+
+```
+## Valores esperados, observados e resíduos
+```{r, warning=FALSE}
+X_gabi_a_escrita$observed
+X_gabi_a_escrita$expected
+X_gabi_a_escrita$residuals
+X_gabi_a_escrita$stdres
+
+X_gabi_a_matematica$observed
+X_gabi_a_matematica$expected
+X_gabi_a_matematica$residuals
+X_gabi_a_matematica$stdres
+
+X_gabi_pm_escrita$observed
+X_gabi_pm_escrita$expected
+X_gabi_pm_escrita$residuals
+X_gabi_pm_escrita$stdres
+
+X_gabi_pm_matematica$observed
+X_gabi_pm_matematica$expected
+X_gabi_pm_matematica$residuals
+X_gabi_pm_matematica$stdres
+
+X_gabi_ad_escrita$observed
+X_gabi_ad_escrita$expected
+X_gabi_ad_escrita$residuals
+X_gabi_ad_escrita$stdres
+
+X_gabi_ad_matematica$observed
+X_gabi_ad_matematica$expected
+X_gabi_ad_matematica$residuals
+X_gabi_ad_matematica$stdres
+
+X_gabi_pp_escrita$observed
+X_gabi_pp_escrita$expected
+X_gabi_pp_escrita$residuals
+X_gabi_pp_escrita$stdres
+
+X_gabi_pp_matematica$observed
+X_gabi_pp_matematica$expected
+X_gabi_pp_matematica$residuals
+X_gabi_pp_matematica$stdres
+```
+## Ajustes de Alfa e Resíduos
+```{r}
+novoalfa <- 0.05/5
+# Valor do novo alfa 0.01
+qnorm(novoalfa/2)
+# Ponto de corte dos resíduos = 2.57
+```
+# Teste x² de Independência
+Abaixo, observa-se a construção do banco de dados e suas respectivas análises do teste qui-quadrado. Para esse teste, foi colocado a categoria completa das profissões nas colunas, e as linhas apresentaram as cinco categorias possíveis de resposta. Em seguida, o teste analisa a diferença de distribuição dessas categorias.  
+  
+  Os dados **não** apresentaram resultados significativos, mesmo quando isolava-se as duas profissões mais correlatas. 
+```{r}
+gabi_escrita <- data.frame(Arquitetos=c(0,1,14,1,4), Pro_Mate=c(1,4,14,3,5), 
+                           Advogados=c(3,3,13,1,5), Pro_Port=c(1,2,10,0,10), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+
+chisq.test(gabi_escrita)
+
+gabi_matematica <- data.frame(Arquitetos=c(13,11,6,0,4), Pro_Mate=c(9,4,6,4,3), 
+                              Advogados=c(11,4,9,2,2), Pro_Port=c(12,2,3,2,3), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+
+chisq.test(gabi_matematica)
+
+gabi_teste <- data.frame(Arquitetos=c(13,11,6,0,4), Pro_Mate=c(9,4,6,4,3), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+
+chisq.test(gabi_teste)
+
+gabi_teste2 <- data.frame(Advogados=c(11,4,9,2,2), Pro_Port=c(12,2,3,2,3), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+
+chisq.test(gabi_teste2)
+
+## Candy pediu
+gabi_esc <- data.frame(Pro_Mate=c(1,4,14,3,5), Pro_Port=c(1,2,10,0,10), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+chisq.test(gabi_esc)
+
+gabi_mat <- data.frame(Pro_Mate=c(9,4,6,4,3), Pro_Port=c(12,2,3,2,3), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+chisq.test(gabi_mat)
+
+gabi_esc2 <- data.frame(Arquitetos=c(0,1,14,1,4), Advogados=c(3,3,13,1,5), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+chisq.test(gabi_esc2)
+
+gabi_mat2 <- data.frame(Arquitetos=c(13,11,6,0,4), Advogados=c(11,4,9,2,2), 
+                   row.names = c('T1', 'T2', 'T3', 'T4','T5'))
+chisq.test(gabi_mat2)
+```
+
+
+## Cálculo de porcentagem
+
+```{r}
+gabi_escrita <- gabi_escrita %>% mutate(porc_Arquite = Arquitetos/sum(Arquitetos)*100)
+gabi_escrita <- gabi_escrita %>% mutate(porc_Mat = Pro_Mate/sum(Pro_Mate)*100)
+gabi_escrita <- gabi_escrita %>% mutate(porc_AD = Advogados/sum(Advogados)*100)
+gabi_escrita <- gabi_escrita %>% mutate(porc_Por = Pro_Port/sum(Pro_Port)*100)
+
+gabi_matematica <- gabi_matematica %>% mutate(porc_Arquite = Arquitetos/sum(Arquitetos)*100)
+gabi_matematica <- gabi_matematica %>% mutate(porc_Mat = Pro_Mate/sum(Pro_Mate)*100)
+gabi_matematica <- gabi_matematica %>% mutate(porc_AD = Advogados/sum(Advogados)*100)
+gabi_matematica <- gabi_matematica %>% mutate(porc_Por = Pro_Port/sum(Pro_Port)*100)
+
+gabi_teste <- gabi_teste %>% mutate(porc_Arquite = Arquitetos/sum(Arquitetos)*100)
+gabi_teste <- gabi_teste %>% mutate(porc_Mat = Pro_Mate/sum(Pro_Mate)*100)
+
+gabi_teste2 <- gabi_teste2 %>% mutate(porc_AD = Advogados/sum(Advogados)*100)
+gabi_teste2 <- gabi_teste2 %>% mutate(porc_Por = Pro_Port/sum(Pro_Port)*100)
+```
+
+## Valores de porcentagem
+```{r}
+gabi_escrita$porc_Arquite
+gabi_escrita$porc_Mat
+gabi_escrita$porc_AD
+gabi_escrita$porc_Por
+gabi_matematica$porc_Arquite
+gabi_matematica$porc_Mat
+gabi_matematica$porc_AD
+gabi_matematica$porc_Por
+gabi_teste$porc_Arquite
+gabi_teste$porc_Mat
+gabi_teste2$porc_AD
+gabi_teste2$porc_Por
+```

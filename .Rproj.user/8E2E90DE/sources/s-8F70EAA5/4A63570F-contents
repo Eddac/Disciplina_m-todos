@@ -1,0 +1,245 @@
+---
+title: "Análises"
+author: "Emanuel Cordeiro"
+date: "7/1/2022"
+output: html_document
+---
+
+# Carregamento de pacotes
+```{r}
+library(arsenal)
+library(olsrr)
+library(ggpubr)
+library(pander)
+```
+
+
+
+# Análises de correlação
+
+
+```{r}
+df_principal_join %>% select(2:6) %>% corr.test()
+df_principal_join %>% select(7:11) %>% corr.test()
+df_principal_join %>% select(12:16) %>% corr.test()
+```
+
+```{r}
+profm6 <- df_principal_join %>% select(6,11,16) %>% corr.test()
+profm6$stars 
+```
+
+```{r}
+profm <- corr.test(df_principal_join[20:36], df_principal_join[3:6])
+profm$stars 
+```
+
+```{r}
+cor.test(df_principal_join[20:36], df_principal_join[3:6]) %>% pander()
+```
+
+
+```{r}
+profm2 <- corr.test(df_principal_join[20:36], df_principal_join[7:11])
+profm2$stars
+```
+
+```{r}
+profm3 <- corr.test(df_principal_join[3:16], df_principal_join[18])
+profm3$stars
+```
+
+```{r}
+profm3 <- corr.test(df_principal_join[20:36], df_principal_join[12:16])
+profm3$stars
+```
+
+```{r}
+profm4 <- corr.test(df_principal_join[20:36], df_principal_join[20:36])
+profm4$stars
+```
+
+```{r}
+profm5 <- corr.test(df_principal_join[20:36], df_principal_join[18])
+profm5$stars
+```
+
+```{r}
+names(df_principal_join)
+```
+
+# Análises de regressão  
+
+## Análises dos pressupostos
+- Teste de normalidade
+```{r}
+ols_plot_resid_qq(mod1)
+```
+
+```{r}
+ols_plot_resid_qq(modP1)
+```
+
+```{r}
+ols_test_normality(mod1)
+```
+
+```{r}
+ols_test_normality(modP1)
+```
+
+```{r}
+ols_plot_resid_qq(modD)
+```
+
+```{r}
+ols_test_normality(modD)
+```
+
+```{r}
+ols_plot_resid_qq(mod_nota3)
+```
+
+```{r}
+ols_test_normality(mod_nota3)
+```
+
+
+- Teste de homocesta
+```{r}
+ols_plot_resid_fit(mod1)
+ols_test_breusch_pagan(mod1)
+```
+
+```{r}
+ols_plot_resid_fit(modP1)
+ols_test_breusch_pagan(modP1)
+```
+
+```{r}
+ols_plot_resid_fit(modD)
+ols_test_breusch_pagan(modD)
+```
+
+```{r}
+ols_plot_resid_fit(mod_nota3)
+ols_test_breusch_pagan(mod_nota3)
+```
+
+- Ind resi
+```{r}
+car::durbinWatsonTest(mod1)
+```
+
+```{r}
+car::durbinWatsonTest(modP1)
+```
+
+```{r}
+car::durbinWatsonTest(modD)
+```
+
+```{r}
+car::durbinWatsonTest(mod_nota3)
+```
+
+- Multicolinearidade 
+```{r}
+ols_coll_diag(mod1)
+```
+
+```{r}
+ols_coll_diag(modP1)
+```
+
+```{r}
+ols_coll_diag(modD)
+```
+
+```{r}
+ols_coll_diag(mod_nota3)
+```
+
+## Modelos de regressão para a tese  
+
+```{r}
+## Modelo de regressão 1 (TESE)
+mod1 <- lm(Autoridade ~ CF3 + HF3 + HF4 + HF5, df_principal_join)
+ols_regress(mod1)
+```
+
+```{r}
+ggplot(df_principal_join, aes(x = HF3, y = Autoridade)) +
+  geom_jitter() + geom_smooth(method = 'lm') +
+  ggpubr::stat_regline_equation(label.x = 5.1, label.y = 1.1) +
+  ggpubr::stat_cor(aes(label = ..rr.label..), method = 'pearson',
+                   label.x = 1, label.y = 0.9)
+```
+```{r}
+## Modelo de regressão 2 (TESE)
+modP1 <- lm(Autoridade_P ~ CF3 + CF4 + HF2 + HF3 + HF5, df_principal_join)
+ols_regress(modP1)
+```
+
+```{r}
+## Modelo de regressão 3 (TESE)
+modD <- lm(Grau_Entrada_D ~ HF2 + HF3 + HF4 + MF2 + MF3 + MF_GERAL, df_principal_join)
+ols_regress(modD)
+```
+
+```{r} 
+## Modelo de regressão 4 (TESE)
+mod_nota3 <- lm(nota ~ Autoridade_P + rvtotal, df_principal_join)
+ols_regress(mod_nota3)
+```
+
+# Análises de test t para a turma Psicologia 3
+  
+- A turma de Psicologia 3 apresentou dois grupos bem delineados visualmente, esses grupos receberam rótulos para comparar entre as variáveis do estudo.
+
+```{r}
+Psi_mau_corte <- df_principal_join %>% slice(142:174)
+```
+
+```{r}
+Psi_mau_corte$Grupo <- c(2,1,2,1,1,2,2,2,2,2,2,1,2,1,1,2,1,1,2,2,2,2,2,2,1,2,1,2,1,1,1,1,1)
+```
+
+```{r}
+t.test(HF1 ~ Grupo, data = Psi_mau_corte)
+t.test(HF2 ~ Grupo, data = Psi_mau_corte)
+t.test(HF3 ~ Grupo, data = Psi_mau_corte)
+t.test(HF4 ~ Grupo, data = Psi_mau_corte)
+t.test(HF5 ~ Grupo, data = Psi_mau_corte)
+t.test(CF1 ~ Grupo, data = Psi_mau_corte)
+t.test(CF2 ~ Grupo, data = Psi_mau_corte)
+t.test(CF3 ~ Grupo, data = Psi_mau_corte)
+t.test(CF4 ~ Grupo, data = Psi_mau_corte)
+t.test(CF5 ~ Grupo, data = Psi_mau_corte)
+t.test(MF1 ~ Grupo, data = Psi_mau_corte)
+t.test(MF2 ~ Grupo, data = Psi_mau_corte)
+t.test(MF3 ~ Grupo, data = Psi_mau_corte)
+t.test(C_GERAL ~ Grupo, data = Psi_mau_corte)
+t.test(MF_GERAL ~ Grupo, data = Psi_mau_corte)
+t.test(nota ~ Grupo, data = Psi_mau_corte)
+t.test(rvtotal ~ Grupo, data = Psi_mau_corte)
+```
+
+------------------------------------------------
+
+# Salvar o banco de dados em CSV
+
+```{r}
+write_csv(df_principal_join, "df_tese.csv")
+```
+
+```{r}
+write_csv(df_universidade, "df_universidade.csv")
+```
+
+
+
+
+
+
+
