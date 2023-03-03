@@ -303,15 +303,26 @@ x1$residuals
 # desvio padrão dos resíduos
 x1$stdres
 
+
+
+# Aula 28/02/2023 --------------------------------------------------------------
 # Qui quadrado de aderencia
 festa <- data.frame(doces = c(90,80,50,95,40), 
                                  row.names = c("Pedro","Maria", 
                                                "Samuel", "Mari", 
                                                "Joao"))
 
+festa <- data.frame(doces = c(90,80,50,95,40),
+                    row.names = c("Pedro", "Maria", "Samuel",
+                                  "Mari", "Joao"))
+
 options(scipen = 999)
+
 x_festa <- chisq.test(festa, p=c(0.20, 0.20, 0.20, 0.20, 0.20))
+
 x_festa
+
+view(x_festa)
 
 x_festa$observed
 x_festa$expected
@@ -325,12 +336,32 @@ qnorm(novoalfa/2)
 
 # Carregando banco de dados DADOS1_EMAN
 df_pf <- read_xlsx("DADOS1_EMAN.xlsx")
+
+df_pf$Percentil <- df_pf$Percentil*100
+
+
 # transformando o percentil
 df_pf$Percentil <- df_pf$Percentil*100
 
+df_pf %>% select(Acertos) %>% summary
+
 # Preparando análises para o test t
 
+# t test para amostras independentes
 df_pf_ttest <- t.test(Total ~ Gênero, var.equal = T, data = df_pf)
 
+# visualizando a tabela
 df_pf_ttest %>% pander(., split.table = Inf)
+
+# criando dados aleatórios como nova coluna
+df_pf$Acertos_2 <- rnorm(256, mean = 113, sd = 5)
+
+# Olhando o sumário da nova coluna
+df_pf %>% select(Acertos_2) %>% summary()
+
+# Transformando em banco vertical
+df_pf_long <- df_pf %>% select(1,5,10) %>% gather("Acertos", "Total", 2:3)
+
+# t test pareado
+t.test(Total ~ Acertos, paired = TRUE, data = df_pf_long)
 
