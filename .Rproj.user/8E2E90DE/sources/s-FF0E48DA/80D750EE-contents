@@ -1,0 +1,61 @@
+#Avaliação: Tópicos 2- Métodos Quantitativos - 
+#Discentes: Mariana Gomes Maranhão e Wilker Pereira Santos Santana 
+# Atividade 1 (5 pontos)
+
+# A partir do banco de dados df_geral faça as seguintes tarefas: 
+#Elaboração do df_geral:
+library(tidyverse)
+df_ap <- read_xlsx("HSE_AP.xlsx")
+df_ss <- read_xlsx("HSE_DOC_SERSO_2.xlsx")
+
+names(df_ap)
+names(df_ss)
+
+df_ap <- df_ap %>% rename("1ª Amizade" = "1ª amizade", 
+                          "2ª Amizade" = "2ª amizade",
+                          "3ª Amizade" = "3ª amizade",
+                          "4ª Amizade" = "4ª amizade",
+                          "5ª Amizade" = "5ª amizade",
+                          "1º Distanciamento" = "1ª distanciamento",
+                          "2º Distanciamento" = "2ª distanciamento",
+                          "3º Distanciamento" = "3ª distanciamento",
+                          "4º Distanciamento" = "4ª distanciamento",
+                          "5º Distanciamento" = "5ª distanciamento")
+
+df_geral <- rbind(df_ap, df_ss) 
+#Questão 1- Deixe apenas os números na coluna Idade, retirando a palavra "anos": 
+df_geral<- transform(df_geral,Idade= parse_number(Idade)) 
+#Questão 2 - Confirme se a coluna Idade está númerica. Caso não, transforme em númerica.
+is.numeric(df_geral$Idade) 
+# neste caso, a resposta desejada é: [1] TRUE 
+#Questão 3 - Crie os fatores de metas de realização que correspondem ao conjunto de itens específicos:
+# Fator 1 (Meta performance) - itens 58,59,60,61,64 
+df_geral<-df_geral %>% mutate(Meta_Performance=rowMeans(df_geral[,c(58:61,64)])) 
+#Fator 2 (Meta aprender) - 62,63,65,66,67,68,69,70 
+df_geral<-df_geral %>% mutate(Meta_Aprender=rowMeans(df_geral[,c(62,63,65:70)]))
+#Fator 3 (Meta evitação)- 71,72,73,74
+df_geral <-df_geral %>% mutate(Meta_Evitação=rowMeans(df_geral[,c(71:74)]))
+#Fator geral (Meta geral) - As três novas colunas 
+df_geral<-df_geral %>% mutate(Meta_Geral=rowMeans(df_geral[,c(123:125)])) 
+# Teste qui-quadrado de independência 
+# realize o teste comparando gênero e "Qual o seu curso"
+# Fique à vontade para usar o caminho que achar melhor
+# Além de escrever o script, escreva ou grave um curto vídeo explicando os resultados encontrados. 
+qi_ind<- df_geral
+
+count_1<- table(qi_ind$Gênero, qi_ind$Qual.o.seu.curso.)
+chisq.test(count_1)
+
+count_2<- chisq.test(count_1)
+count_2$observed
+count_2$expected
+#Passo a passo:
+#  1- Criamos uma cópia da tabela para não alterarmos a original
+#  2- Criamos uma tabela com apenas os dados que deveriam ser analisados
+#  3- Realizamos o teste  qui-quadrado de independência
+
+#Interpretação do resultado: 
+#  Os resultados encontrados nesse caso foram: p-value = 0.01231, X-squared = 6.266
+#  O x-quadrado elevado (próximo a  6,635) mostra que existe uma diferença entre os valores esperados de ocorrência e os obtidos das tabelas de gênero e qual seu curso. Podemos ver isso no resultado esperado do gênero masculino de psicologia ser em torno de 8 pessoas e o resultado obtido ser de 14. Isso sugere uma associação estatística entre as variáveis. Isso pode ser enfatizado a partir da análise do p-value
+#  Para analisar o p-value usamos 0.05 como o nível de significância, caso o p-value seja menor que esse número as variáveis têm uma grande possibilidade de serem dependentes. Nessa situação temos p-value=0.01231 (resultado menor que 0.05), por isso há evidências para sugerir que as variáveis categóricas “gênero” e  “qual o seu curso” são dependentes. 
+

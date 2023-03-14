@@ -1,0 +1,72 @@
+library(tidyverse)
+
+# Estatísticas descritivas
+
+# Encadeamento de funções
+df_exe %>% view()
+
+# Função
+view(df_exe)
+glimpse(df_exe)
+
+df_exe %>% colSums()
+df_exe %>% select(1,2) %>% colSums()
+df_exe %>% select(1,2) %>% rowSums()
+df_exe %>% select(1,2) %>% colMeans()
+
+
+sd(df_exe$Felicidade)
+
+count(df_exe, Sexo)
+
+df_exe %>% count(Sexo) %>% mutate(percentil = n/sum(n)*100)
+
+# Qui-quadrado
+# Introdução as análises estatísticas
+# Análise de qui-quadrado
+# O teste apresenta três versões
+# Entendendo o conceito do teste de hipóteses
+# Hipótese Nula/Hipótese alternativa
+# Conceito do valor de p
+# Nesse teste, analisamos a associação entre variáveis a partir de uma escolha ou tipo de resposta
+# variáveis dicotômicas ou nominais
+
+CrossTable(Base_treino$sex_male, Base_treino$adhd_parent,
+           expected = T, prop.c = F, prop.chisq = F, prop.t = F,
+           dnn = c("Sexo", "TDAH"))
+
+CrossTable(Base_treino$sex_male, Base_treino$adhd_parent,
+           chisq = T)$CST
+
+#### Aula e atividade
+
+df_pf <- df_pf %>% mutate(Idade_Grupo = ifelse(Idade <= 27, "Idade_1", 
+                                               ifelse(Idade  %in% 28:35, "Idade_2", 
+                                                      ifelse(Idade >= 36, "Idade_3", 0))))
+
+df_pf <- df_pf %>% mutate(Escolaridade_Grupo = ifelse(Escolaridade %in% c("FC", "FI", "EMI"), "Ensino Básico", 
+                                                      ifelse(Escolaridade %in% c("EMC", "SI"), "Ensino Médio", 
+                                                             ifelse(Escolaridade %in% c("SC"), "Ensino Superior", 0))))
+modelo_anova_2 <- aov(Total ~ Escolaridade_Grupo, data = df_pf)
+summary(modelo_anova_2)
+TukeyHSD(modelo_anova_2)
+
+modelo_anova_hocbonf_2 <- glht(modelo_anova_2)
+summary(modelo_anova_hocbonf_2)
+
+modelo_anova_3 <- aov(Total ~ Idade_Grupo, data = df_pf)
+summary(modelo_anova_3)
+TukeyHSD(modelo_anova_3)
+
+modelo_anova_hocbonf_3 <- glht(modelo_anova_3)
+summary(modelo_anova_hocbonf_3)
+
+modelo_anova_4 <- aov(Total ~ Escolaridade_Grupo, data = df_pf)
+summary(modelo_anova_3)
+TukeyHSD(modelo_anova_4)
+
+modelo_anova_hocbonf_4 <- glht(modelo_anova_4)
+summary(modelo_anova_hocbonf_4)
+
+
+
