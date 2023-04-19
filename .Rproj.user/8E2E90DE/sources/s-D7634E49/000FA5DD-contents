@@ -41,12 +41,22 @@ CrossTable(Base_treino$sex_male, Base_treino$adhd_parent,
 #### Aula e atividade
 
 df_pf <- df_pf %>% mutate(Idade_Grupo = ifelse(Idade <= 27, "Idade_1", 
+                                               ifelse(Idade %in% 28:35, "Idade_2",
+                                                      ifelse(Idade >= 36, "Idade_3", 0))))
+
+df_pf <- df_pf %>% mutate(Idade_Grupo = ifelse(Idade <= 27, "Idade_1", 
                                                ifelse(Idade  %in% 28:35, "Idade_2", 
                                                       ifelse(Idade >= 36, "Idade_3", 0))))
 
 df_pf <- df_pf %>% mutate(Escolaridade_Grupo = ifelse(Escolaridade %in% c("FC", "FI", "EMI"), "Ensino Básico", 
                                                       ifelse(Escolaridade %in% c("EMC", "SI"), "Ensino Médio", 
                                                              ifelse(Escolaridade %in% c("SC"), "Ensino Superior", 0))))
+
+
+modelo_anova_2 <- aov(Total ~ Escolaridade_Grupo, data = df_pf)
+summary(modelo_anova_2)
+
+
 modelo_anova_2 <- aov(Total ~ Escolaridade_Grupo, data = df_pf)
 summary(modelo_anova_2)
 TukeyHSD(modelo_anova_2)

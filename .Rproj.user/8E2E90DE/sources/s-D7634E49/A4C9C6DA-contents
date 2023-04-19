@@ -39,3 +39,29 @@
 # A função ifelse poderá ajudar na construção dos grupos
 # possivelmente será necerrário unir mais de uma função em uma mesma linha de código
 
+
+# Atividade 3 -------------------------------------------------------------
+
+# Primeira etapa é referente a manipulação de dados
+# Selecione as colunas do banco_ufpe referentes aos fatores das escalas, ou seja, as últimas colunas.
+
+# A partir desse banco parcial, faça a transformação das colunas referentes a impulsividade
+# A coluna F_IM1, F_IM2 e F_IM3 darão suporte para a construção das novas colunas IMP1, IMP2 e IMP3
+# As novas colunas dividirão os resultados entre BAIXO, MODERADO e ALTO que ficarão nessas novas colunas
+# Para saber quais escores são baixo, moderado ou alto será necessário olhar as tabelas de percentis que vou encaminhar
+# Os valores Baixo serão referentes até o percentil 25
+# Os valores moderado serão referentes do percentil 25 até o 75
+# Os valores alto serão referentes do percentil 75 até o 100
+
+# Após isso, transforme as novas colunas em factor, com os níveis começando por baixo, moderado e alto
+# Isso será necessário para que as regressões sejam interpretadas corretamente
+
+# Por fim, faça dois modelos de regressão.
+# O primeiro tem como VD a variável RESBP e VI IMP1
+# O segundo tem como VD a variável RESBP e VI IMP1, IMP2 e IMP3
+
+# Faça as análises e entregue os scripts com a interpretação dos modelos de regressão
+
+
+
+
