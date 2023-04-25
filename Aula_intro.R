@@ -10,8 +10,8 @@ library(descr)
 library(janitor)
 library(ggplot2)
 library(psych)
-library(multcomp)
-
+library(ggcorrplot)
+library(ggpubr)
 # Aula 1 ------------------------------------------------------------------
 
 # Conceitos básicos
@@ -403,12 +403,219 @@ ggplot(data.frame(x = df_pf$Total), aes(x)) +
 
 modelo_anova <- aov(Total ~ Escolaridade, data = df_pf)
 summary(modelo_anova)
-
+modelo_anova$coefficients
+modelo_anova$fitted.values
 
 modelo_anova <- aov(Total ~ Escolaridade, data = df_pf)
 summary(modelo_anova)
 
 modelo_anova_hocbonf <- glht(modelo_anova) 
 summary(modelo_anova_hocbonf)
+
+# Solução da atividade
+
+df_pf <- df_pf %>% mutate(Idade_Grupo = ifelse(Idade <= 27, "Idade_1", 
+                                               ifelse(Idade %in% 28:35, "Idade_2",
+                                                      ifelse(Idade >= 36, "Idade_3", 0))))
+
+df_pf <- df_pf %>% mutate(Idade_Grupo = ifelse(Idade <= 27, "Idade_1", 
+                                               ifelse(Idade  %in% 28:35, "Idade_2", 
+                                                      ifelse(Idade >= 36, "Idade_3", 0))))
+
+df_pf <- df_pf %>% mutate(Escolaridade_Grupo = ifelse(Escolaridade %in% c("FC", "FI", "EMI"), "Ensino Básico", 
+                                                      ifelse(Escolaridade %in% c("EMC", "SI"), "Ensino Médio", 
+                                                             ifelse(Escolaridade %in% c("SC"), "Ensino Superior", 0))))
+
+aov(Total ~ Escolaridade_Grupo, data = df_pf)
+
+modelo_anova_2 <- aov(Total ~ Escolaridade_Grupo, data = df_pf)
+summary(modelo_anova_2)
+modelo_anova_2$coefficients
+
+df_pf %>%
+  group_by(Escolaridade_Grupo) %>%
+  summarise(
+    media_total = mean(Total),
+    desvio_padrao_total = sd(Total),
+    minimo_total = min(Total),
+    maximo_total = max(Total)
+  )
+
+df_pf %>%
+  group_by(Idade_Grupo) %>%
+  summarise(
+    media_total = mean(Total),
+    desvio_padrao_total = sd(Total),
+    minimo_total = min(Total),
+    maximo_total = max(Total)
+  )
+
+df_pf %>%
+  group_by(Gênero) %>%
+  summarise(
+    media_total = mean(Total),
+    desvio_padrao_total = sd(Total),
+    minimo_total = min(Total),
+    maximo_total = max(Total)
+  )
+
+# Teste Posthoc
+TukeyHSD(modelo_anova_2)
+
+df_pf %>% select(8,11) %>% filter(Escolaridade_Grupo == "Ensino Médio") %>% summary()
+df_pf %>% select(8,11) %>% filter(Escolaridade_Grupo == "Ensino Básico") %>% summary()
+df_pf %>% select(8,11) %>% filter(Escolaridade_Grupo == "Ensino Superior") %>% summary()
+
+modelo_anova_hocbonf_2 <- glht(modelo_anova_2)
+summary(modelo_anova_hocbonf_2)
+
+modelo_anova_3 <- aov(Total ~ Idade_Grupo, data = df_pf)
+summary(modelo_anova_3)
+modelo_anova_3$coefficients
+TukeyHSD(modelo_anova_3) %>% plot()
+
+
+
+modelo_anova_hocbonf_3 <- glht(modelo_anova_3)
+summary(modelo_anova_hocbonf_3)
+
+modelo_anova_4 <- aov(Total ~ Escolaridade_Grupo, data = df_pf)
+summary(modelo_anova_3)
+TukeyHSD(modelo_anova_4)
+
+modelo_anova_hocbonf_4 <- glht(modelo_anova_4)
+summary(modelo_anova_hocbonf_4)
+
+
+# Aula 21/03/2023 ---------------------------------------------------------
+
+# Análises de correlação
+# As variáveis precisam ser contínuas ou discretas longas
+
+glimpse(df_pf)
+
+# Hipótese nula é que os dados tem distribuição normal >0.05
+shapiro.test(df_pf$Idade)
+shapiro.test(df_pf$Total)
+
+boxplot(df_pf$Idade)
+boxplot(df_pf$Total)
+
+plot(df_pf$Idade, df_pf$Total)
+
+cor.test(df_pf$Idade, df_pf$Total, method = "pearson")
+
+cor.test(df_pf$Idade, df_pf$Total, method = "pearson")
+
+ggplot(df_pf, aes(x = Idade, y = Total))+
+  geom_point(size = 1.2)+
+  labs(y = "Resultado do Teste")+
+  theme_linedraw()
+
+ggplot(df_pf, aes(x = Idade, y = Total))+
+  geom_point(size=1.5)+
+  labs(y = "Resultado do Teste")+
+  theme_classic()
+
+matriz <- df_pf %>% select(2,8) %>% cor(method = "pearson") %>% round(2)
+view(matriz)
+
+
+corrplot::corrplot(matriz, method = "number")
+
+corrplot::corrplot(matriz, method = "circle",
+                   type = "upper", order = "hclust",)
+
+# Banco construção
+
+ggcorrplot(matriz,
+           method = "circle")
+
+banco_ufpe %>% view()
+
+names(banco_ufpe)
+
+# pressupostos
+# testes parametricos - /person
+# testes não parametricos - spearman/kendal
+# correlacao tetracorica/ policorica
+
+matriz_cor <- banco_ufpe %>% select(87:95) %>% cor(method = "pearson") %>% round(2)
+matriz_cor %>% view()
+
+corrplot::corrplot(matriz_cor, method = "number", p.mat = Sig$p, sig.level = 0.05, type = "upper",
+                   number.cex = 1.2, cl.cex = 1.5, tl.col = "blue")
+
+Sig <- corrplot::cor.mtest(matriz_cor, conf.level = 0.95)
+
+
+
+
+matriz_cor <- df_geral %>% select(86:94) %>% cor(method = "pearson") %>% round(2)
+
+testRes <-  corrplot::cor.mtest(matriz_cor, conf.level = 0.95) 
+corrplot::corrplot(matriz_cor, method = "number", p.mat = testRes$p, sig.level = 0.05, type = "upper",
+                   number.cex = 0.8)
+
+
+# Regressão linear --------------------------------------------------------
+
+# Verificação dos pressupostos
+plot(banco_ufpe$Idade, banco_ufpe$F_IM1)
+
+# Observação sobre variáveis dependentes e independentes 
+
+# Regressão linear simples
+mod_1 <- lm(Idade ~ F_IM1, data = banco_ufpe)
+summary(mod_1)
+
+# Análise gráfica
+par(mfrow=c(2,2))
+plot(mod_1)
+
+
+# 1 Gráfico permite visualizar a linearidade e homocedasticidade
+# A linha vermelha deve ficar próxima da linha cinza
+
+# 2 gráfico para visualizar a normalidade
+# os pontos devem ficar em cima da linha
+
+# 3 gráfico para visualizar a homocedasticidade
+# a linha vermelha deve ficar mais horizontal
+
+# 4 Gráfico para visualizar outliers
+# dados que estejam acima ou abaixo de -3 +3 
+
+# Normalidade dos resíduos
+# p menor que 0.05 a distribuição não é normal
+shapiro.test(mod_1$residuals)
+
+# Análise do modelo
+summary(mod_1)
+
+# Intercepto é o valor quando a VI é igual a zero. No modelo, ao subir um ponto de impulsividade,
+# a idade cai em aproximadamente 3 pontos, ou 3 anos.
+
+# R quadrado ajustado
+# Impulsividade está explicando a variação em idade em aproximadamente 8%
+# Estatística F, compara o modelo com previsor e um modelo hipotetico sem previsor.
+
+# Gráfico de dispersão
+ggplot(data = banco_ufpe, mapping = aes(x = Idade, y = F_IM1))+
+  geom_point()+
+  geom_smooth(method = "lm", col = "red")+
+  theme_classic()
+
+
+# Regressão linear múltipla
+mod_2 <- lm(Idade ~ F_IM1 + F_IM2, data = banco_ufpe)
+summary(mod_2)
+
+# Ausência de multicolinearidade 
+banco_ufpe %>% select(93:95) %>% pairs.panels()
+
+vif(mod_2)
+
+# quando a correlação entre as variáveis estão acima de 0.8
 
 

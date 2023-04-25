@@ -70,6 +70,40 @@ df_2 <- data.frame(Nome = c("Carlos", "Eduarda", "Pedro", "Maria", "João"),
 
 
 
+## Atividade
+names(banco_parcial_ufpe)
+glimpse(banco_parcial_ufpe)
+
+banco_parcial_ufpe <- banco_ufpe %>% select(87:95)
+
+banco_parcial_ufpe <- banco_parcial_ufpe %>% mutate(IMP1 = ifelse(F_IM1 <= 2.429, "BAIXA", 
+                                                                  ifelse(F_IM1 >= 2.43 & F_IM1 <= 3.859, "MODERADO",
+                                                                         ifelse(F_IM1 >= 3.86, "ALTO", 0))))
+
+
+banco_parcial_ufpe <- banco_parcial_ufpe %>% mutate(IMP2 = ifelse(F_IM2 <= 2.169, "BAIXA", 
+                                                                  ifelse(F_IM2 >= 2.17 & F_IM2 <= 3.09, "MODERADO",
+                                                                         ifelse(F_IM2 >= 3.1, "ALTO", 0))))
+
+banco_parcial_ufpe <- banco_parcial_ufpe %>% mutate(IMP3 = ifelse(F_IM3 <= 3.09, "BAIXA", 
+                                                                  ifelse(F_IM3 >= 3.1 & F_IM3 <= 4.09, "MODERADO",
+                                                                         ifelse(F_IM3 >= 4.1, "ALTO", 0))))
+
+banco_parcial_ufpe$IMP1 <- factor(banco_parcial_ufpe$IMP1, levels = c("BAIXA", "MODERADO", "ALTO"))
+banco_parcial_ufpe$IMP2 <- factor(banco_parcial_ufpe$IMP2, levels = c("BAIXA", "MODERADO", "ALTO"))
+banco_parcial_ufpe$IMP3 <- factor(banco_parcial_ufpe$IMP3, levels = c("BAIXA", "MODERADO", "ALTO"))
+
+mod_im <- lm(RESBP ~ IMP1, data = banco_parcial_ufpe)
+summary(mod_im)
+
+mod_im2 <- lm(RESBP ~ IMP1 + IMP2 + IMP3, data = banco_parcial_ufpe)
+summary(mod_im2)
+
+mod_im3 <- lm(RESAP ~ IMP1, data = banco_parcial_ufpe)
+summary(mod_im3)
+
+mod_im4 <- lm(RESAP ~ IMP1 + IMP2 + IMP3, data = banco_parcial_ufpe)
+summary(mod_im4)
 
 
 

@@ -3,7 +3,7 @@
     "path": "~/Library/CloudStorage/OneDrive-Pessoal/Aulas_UFPE/Intro_quantitativo/Disci_quanti/Disciplina_metodos/Aula_intro.R",
     "project_path": "Aula_intro.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "2998984422",
     "contents": "",
     "dirty": false,
     "created": 1670972939081.0,
@@ -12,16 +12,16 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "612,18",
-        "scrollLine": "604",
+        "cursorPosition": "620,0",
+        "scrollLine": "596",
         "docOutlineVisible": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1681926519,
+    "lastKnownWriteTime": 1682436413,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1681926519309,
+    "last_content_update": 1682436413654,
     "read_only": false,
     "read_only_alternatives": []
 }
